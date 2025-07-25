@@ -11,7 +11,7 @@ import sys
 if __name__ == '__main__':
     database_loc = os.environ['PROJECT_DATABASE']
     title = input('title: ')
-    database.database_file = '/home/gabri/dev/database/index.gproj'
+    database.database_file = database_loc + '/index.gproj'
     projects = database.parse_file()
     categories = []
     languages = []
@@ -28,16 +28,16 @@ if __name__ == '__main__':
     id = str(uuid.uuid4())
     path = f'{database_loc}/{id}'
     os.mkdir(path)
-    obj = GProj(title, datetime.datetime.now(), languages, categories, path + '/.gproj', id)
+    obj = GProj(title, datetime.datetime.now(), languages, categories, path, id)
 
     print(f'{title} {obj.creation.strftime("%Y-%m-d")} {categories} {languages} {id}')
-    with open(f'{database_loc}/{id}/.gproj', 'x+') as file:
+    with open(path + '/.gproj', 'x+') as file:
         yaml.dump(obj.stringinate(), file) # Might cause issues -- if so, stop using stringinate.
 
-    with open(f'/home/gabri/dev/database/index.gproj', 'r+') as file:
+    with open(database.database_file, 'r+') as file:
         index = yaml.safe_load(file)
         index.append(obj.serialize())
-    with open(f'/home/gabri/dev/database/index.gproj', 'w+') as file:
+    with open(database.database_file, 'w+') as file:
         yaml.dump(index, file)
 
     if len(sys.argv) > 1:

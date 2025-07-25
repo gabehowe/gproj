@@ -19,7 +19,7 @@ def filter_for_term(term, options):
 
 
 if __name__ == '__main__':
-    database.database_file = '/home/gabri/dev/database/index.gproj'
+    database.database_file = os.environ["PROJECT_DATABASE"] +'/index.gproj'
     # TODO: make this an env variable
     options = database.parse_file()
     unfound = False
