@@ -1,11 +1,12 @@
 #!/bin/bash
-source /home/gabri/dev/database/venv/bin/activate
+# Make a new project interactively and cd to it -- run in current directory as . mkprj
+source $PRJ_DB_DIR/venv/bin/activate
 file_location="$(mktemp)"
-python3 /home/gabri/dev/database/make.py $file_location
-export tempsearchprojectlocation="$(cat /tmp/searchtempfile)"
+python3 $PRJ_DB_DIR/make.py $file_location
+export tempsearchprojectlocation="$(cat $file_location)"
 cd $tempsearchprojectlocation
 
 if [ -f $tempsearchprojectlocation/start ]; then
 	. $tempsearchprojectlocation/start
 fi
-rm /home/gabri/dev/database/searchtempfile
+rm $file_location

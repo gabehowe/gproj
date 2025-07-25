@@ -1,1 +1,4 @@
-python3 /home/gabri/dev/database/database.py -t -i /home/gabri/dev/database/index.gproj
+#!/bin/bash
+# List projects
+python3 $PRJ_DB_DIR/database.py -t -i $PRJ_IDX_DIR
+

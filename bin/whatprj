@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Find the current project from the current location or a given file path.
 fail() {
 	>&2 echo "No project."
 	exit 1

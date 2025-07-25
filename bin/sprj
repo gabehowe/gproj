@@ -1,9 +1,11 @@
 #!/bin/bash
-/home/gabri/dev/database/venv/bin/python3 /home/gabri/dev/database/finder.py
-export tempsearchprojectlocation="$(cat /tmp/searchtempfile)"
+# Find a project interactively and cd to it -- run in current directory as . sprj
+file_location="$(mktemp)"
+$PRJ_DB_DIR/venv/bin/python3 $PRJ_DB_DIR/finder.py $file_location "$@"
+export tempsearchprojectlocation="$(cat $file_location)"
 cd $tempsearchprojectlocation
 
 if [ -f $tempsearchprojectlocation/start ]; then
 	. $tempsearchprojectlocation/start
 fi
-rm /tmp/searchtempfile
+rm $file_location

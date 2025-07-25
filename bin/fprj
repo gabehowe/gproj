@@ -1,2 +1,3 @@
 #!/bin/bash
-/home/gabri/dev/database/venv/bin/python3 /home/gabri/dev/database/find_bare.py "$@"
+# Find a project non-interactively and print its patH.
+$PRJ_DB_DIR/venv/bin/python3 $PRJ_DB_DIR/find_bare.py "$@"
