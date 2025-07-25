@@ -34,4 +34,4 @@ if __name__ == '__main__':
         print("Couldn't find", file=sys.stderr)
         sys.exit(-1)
 
-    print(f'{os.environ["PROJECT_DATABASE"]}/{options[0].id}')
+    print(f'{options[0].path}')

@@ -52,7 +52,7 @@ class GProj:
                     with open(i, 'w+') as file:
                         yaml.safe_dump(data, file)
                 if 'path' not in data.keys():
-                    data['path']=os.path.abspath(file_path)
+                    data['path']=os.path.abspath(file_path.removesuffix('.gproj'))
                 proj = GProj(**data)
                 proj.languages = sorted(proj.languages)
                 proj.categories = sorted(proj.categories)
@@ -119,9 +119,9 @@ def index_dir(directory):
         proj = GProj.from_path(i)
         projects.append(proj)
     # print(projects)
-    if os.path.exists('./index.gproj'):
-        os.remove('./index.gproj')
-    with open('./index.gproj', 'x+') as file:
+    if os.path.exists(database_file):
+        os.remove(database_file)
+    with open(database_file, 'x+') as file:
         serialized = []
         for i in projects:
             serialized.append(i.serialize())
@@ -240,7 +240,7 @@ def pack():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', help='Usage: -d [dir] to parse a directory to default file ./.indx (set with -i)')
+    parser.add_argument('-d', help='Usage: -d [dir] to parse a directory to default file directory/index.gproj (set with -i)')
     parser.add_argument('-i', help='Sets the index file location')
     parser.add_argument('-s', help='Starts the web server', action='store_true')
     parser.add_argument('-t', help='Creates a command line table', action='store_true')
@@ -251,9 +251,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     database_file = './index.gproj' if not args.i else args.i
-    if len(args._get_args()) == 0:
+    if len(args._get_kwargs()) == 0:
         parser.print_help()
-    if args.d:
+    if args.d is not None:
+        if not args.i:
+            database_file = args.d + '/index.gproj'
         index = index_dir(args.d)
         projects = parse_file()
         print_table(index)

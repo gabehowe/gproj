@@ -55,4 +55,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         tf_loc = sys.argv[1]
         with open(tf_loc, 'w+') as tempfile:
-            tempfile.write(f'{os.environ["PROJECT_DATABASE"]}/{options[0].id}')
+            tempfile.write(f'{options[0].path}')
