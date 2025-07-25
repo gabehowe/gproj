@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CS Projects</title>
+    <link href="https://gabe.how/e/master.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+<h1>Projects</h1>
+<h2>{{ count }} total projects</h2>
+<h3></h3>
+
+<div style="display: flex; flex-direction: row; justify-content: space-between">
+    <div style="display: flex; flex-direction: column;">
+
+        <a class="taglink">Clear</a>
+
+        <div style="display: flex; flex-direction: row">
+            <div class="sidebar">
+
+                <h3>Categories</h3>
+                {% for i in categories %}
+                    <a class="taglink">{{ i }}</a>
+                {% endfor %}
+            </div>
+            <div class="sidebar">
+                <h3>Languages</h3>
+                {% for i in languages %}
+                    <a class="taglink">{{ i }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    <table class="sortable" style="overflow: scroll;">
+        <tr>
+            <th>Title</th>
+            <th>Creation</th>
+            <th>Languages</th>
+            <th>Categories</th>
+            <th>Path</th>
+        </tr>
+    </table>
+</div>
+<script src="/static/script.js"></script>
+</body>
+</html>

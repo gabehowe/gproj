@@ -1,0 +1,9 @@
+#!/bin/bash
+/home/gabri/dev/database/venv/bin/python3 /home/gabri/dev/database/finder.py
+export tempsearchprojectlocation="$(cat /tmp/searchtempfile)"
+cd $tempsearchprojectlocation
+
+if [ -f $tempsearchprojectlocation/start ]; then
+	. $tempsearchprojectlocation/start
+fi
+rm /tmp/searchtempfile

@@ -1,0 +1,2 @@
+#!/bin/bash
+/home/gabri/dev/database/venv/bin/python3 /home/gabri/dev/database/find_bare.py "$@"

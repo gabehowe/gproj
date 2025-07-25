@@ -1,0 +1,1 @@
+python3 /home/gabri/dev/database/database.py -t -i /home/gabri/dev/database/index.gproj
