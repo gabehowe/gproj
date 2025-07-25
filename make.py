@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     print(f'{title} {obj.creation.strftime("%Y-%m-d")} {categories} {languages} {id}')
     with open(path + '/.gproj', 'x+') as file:
-        yaml.dump(obj.stringinate(), file) # Might cause issues -- if so, stop using stringinate.
+        yaml.dump(obj.serialize(), file) # Might cause issues -- if so, stop using stringinate.
 
     with open(database.database_file, 'r+') as file:
         index = yaml.safe_load(file)

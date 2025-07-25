@@ -34,7 +34,7 @@ class GProj:
         values = {'title': self.title,
                   'creation': self.creation.strftime("%Y-%m-%d") if isinstance(self.creation, datetime) else str(
                       self.creation),
-                  'languages': ",".join(self.languages), 'categories': ",".join(self.categories), 'id': self.id}
+                  'languages': "[ " + ",".join(self.languages) + " ]", 'categories': "[ " + ",".join(self.categories) + " ]", 'id': self.id}
         return values
 
     def serialize(self):
@@ -172,7 +172,8 @@ def print_table(projects: List[GProj]):
     data += list(
         map(lambda it: [it.id, it.title,
                         it.creation if isinstance(it.creation, str) else it.creation.strftime("%Y-%m-%d"),
-                        ", ".join(it.categories), ", ".join(it.languages)], projects))
+                        it.categories if isinstance(it.categories, str) else ", ".join(it.categories),
+                        it.languages if isinstance(it.languages,str) else ", ".join(it.languages)], projects))
     create_table(data)
 
     print(f'Project Count: {len(projects)}')
@@ -274,7 +275,7 @@ if __name__ == '__main__':
             with open(args.d + 'ignore.gproj', 'w+') as file:
                 file.write('\n'.join(DEFAULT_IGNORE))
 
-        IGNORE = [i.strip() for i in open('ignore.gproj').readlines()]
+        IGNORE = [i.strip() for i in open(args.d + 'ignore.gproj').readlines()]
         index = index_dir(args.d)
         projects = parse_file()
         print_table(index)
