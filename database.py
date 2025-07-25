@@ -15,9 +15,10 @@ from yaml import Loader, parse
 
 app = flask.Flask(__name__, template_folder='web/templates', static_folder='web/static')
 
-IGNORE = ['.idea', 'venv', 'node_modules', 'src', 'build', '.git', 'lib$', 'library', 'libraries', 'release', '.gradle',
-          'plugins', 'saved',
-          'depend', 'res', 'ports', 'download', 'servers', 'out$', 'run$', 'source', 'generated$', 'content$']
+DEFAULT_IGNORE = ['.idea', 'venv', 'node_modules', 'src', 'build', '.git', 'lib$', 'library', 'libraries', 'release',
+                  '.gradle',
+                  'plugins', 'saved',
+                  'depend', 'res', 'ports', 'download', 'servers', 'out$', 'run$', 'source', 'generated$', 'content$']
 
 
 @dataclasses.dataclass
@@ -30,12 +31,16 @@ class GProj:
     id: str
 
     def stringinate(self):
-        values = {'title': self.title, 'creation': self.creation.strftime("%Y-%m-%d") if isinstance(self.creation, datetime) else str(self.creation),
+        values = {'title': self.title,
+                  'creation': self.creation.strftime("%Y-%m-%d") if isinstance(self.creation, datetime) else str(
+                      self.creation),
                   'languages': ",".join(self.languages), 'categories': ",".join(self.categories), 'id': self.id}
         return values
 
     def serialize(self):
-        values = {'title': self.title, 'creation': self.creation.strftime("%Y-%m-%d") if isinstance(self.creation, datetime) else str(self.creation),
+        values = {'title': self.title,
+                  'creation': self.creation.strftime("%Y-%m-%d") if isinstance(self.creation, datetime) else str(
+                      self.creation),
                   'languages': self.languages, 'categories': self.categories, 'id': str(self.id), 'path': self.path}
         return values
 
@@ -52,7 +57,7 @@ class GProj:
                     with open(i, 'w+') as file:
                         yaml.safe_dump(data, file)
                 if 'path' not in data.keys():
-                    data['path']=os.path.abspath(file_path.removesuffix('.gproj'))
+                    data['path'] = os.path.abspath(file_path.removesuffix('.gproj'))
                 proj = GProj(**data)
                 proj.languages = sorted(proj.languages)
                 proj.categories = sorted(proj.categories)
@@ -64,18 +69,21 @@ class GProj:
 
 projects: List[GProj] = []
 
+
 def make_link(project: GProj, file_path: os.PathLike):
     database_loc = os.environ['PROJECT_DATABASE']
-    link_title = project.title.replace(' ','-')
+    link_title = project.title.replace(' ', '-')
     try:
-        os.symlink(f'{ database_loc }/{ project.id }', f'{file_path}/{link_title}')
+        os.symlink(f'{database_loc}/{project.id}', f'{file_path}/{link_title}')
     except FileExistsError:
-        os.symlink(f'{ database_loc }/{ project.id }', f'{file_path}/{link_title}-{project.id}')
+        os.symlink(f'{database_loc}/{project.id}', f'{file_path}/{link_title}-{project.id}')
+
 
 def make_all_links(projects: List[GProj]):
     database_loc = os.environ['PROJECT_DATABASE']
     for i in projects:
         make_link(i, database_loc + '/../links')
+
 
 def check_dir(dir_name, project_files) -> int:
     if any([re.search(fr'/{it}', dir_name.lower()) for it in IGNORE]):
@@ -147,12 +155,12 @@ def create_table(data: List[List[str]]):
             length = floor(lengths[i.index(e)] * (overlength * 0.9 if overlength < 1 else 1))
             cell = e.ljust(length)
             if len(cell) > length:
-                if i.index(e) == 0: # Chop down UUID the most
-                    cell = cell[:length-7] + "…"
-                elif i.index(e) == 2: # Don't chop down date
+                if i.index(e) == 0:  # Chop down UUID the most
+                    cell = cell[:length - 7] + "…"
+                elif i.index(e) == 2:  # Don't chop down date
                     pass
                 else:
-                    cell = cell[:length-1] + "…"
+                    cell = cell[:length - 1] + "…"
             line_str += cell + " | "
         print(line_str)
 
@@ -240,7 +248,8 @@ def pack():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', help='Usage: -d [dir] to parse a directory to default file directory/index.gproj (set with -i)')
+    parser.add_argument('-d',
+                        help='Usage: -d [dir] to parse a directory to default file directory/index.gproj (set with -i)')
     parser.add_argument('-i', help='Sets the index file location')
     parser.add_argument('-s', help='Starts the web server', action='store_true')
     parser.add_argument('-t', help='Creates a command line table', action='store_true')
@@ -254,8 +263,18 @@ if __name__ == '__main__':
     if len(args._get_kwargs()) == 0:
         parser.print_help()
     if args.d is not None:
+        if not os.path.exists(args.d):
+            print(f"Directory {args.d} does not exist.")
+            exit(1)
+
         if not args.i:
             database_file = args.d + '/index.gproj'
+
+        if not os.path.exists(args.d + './ignore.gproj'):
+            with open(args.d + 'ignore.gproj', 'w+') as file:
+                file.write('\n'.join(DEFAULT_IGNORE))
+
+        IGNORE = [i.strip() for i in open('ignore.gproj').readlines()]
         index = index_dir(args.d)
         projects = parse_file()
         print_table(index)
